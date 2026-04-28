@@ -3,160 +3,225 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Data Sutram — Asset Inventory Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Data Sutram — Asset Inventory</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d0f14;
-    --surface: #13161d;
-    --surface2: #1a1e28;
-    --border: #252936;
-    --accent: #4f8ef7;
-    --accent2: #38d9a9;
-    --warn: #ffa94d;
-    --danger: #ff6b6b;
-    --text: #e8eaf0;
-    --muted: #6b7280;
-    --mac: #a78bfa;
-    --win: #60a5fa;
-    --linux: #34d399;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--bg); color: var(--text); font-family: 'Sora', sans-serif; font-size: 14px; min-height: 100vh; }
+:root {
+  --bg: #f5f7fa;
+  --white: #ffffff;
+  --border: #e2e8f0;
+  --border2: #cbd5e1;
+  --text: #1e293b;
+  --muted: #64748b;
+  --muted2: #94a3b8;
+  --accent: #2563eb;
+  --accent-light: #eff6ff;
+  --accent-hover: #1d4ed8;
+  --mac: #7c3aed;
+  --mac-bg: #f5f3ff;
+  --win: #0369a1;
+  --win-bg: #e0f2fe;
+  --linux: #059669;
+  --linux-bg: #ecfdf5;
+  --spare: #d97706;
+  --spare-bg: #fffbeb;
+  --faulty: #dc2626;
+  --faulty-bg: #fef2f2;
+  --active: #16a34a;
+  --active-bg: #f0fdf4;
+  --warranty: #2563eb;
+  --warranty-bg: #eff6ff;
+  --oow: #64748b;
+  --oow-bg: #f8fafc;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.05);
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; font-size:14px; min-height:100vh; }
 
-  /* HEADER */
-  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-  .logo { display: flex; align-items: center; gap: 12px; }
-  .logo-dot { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
-  .logo-text { font-size: 15px; font-weight: 600; letter-spacing: 0.02em; }
-  .logo-sub { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 1px; }
-  .header-right { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+/* HEADER */
+.header { background:var(--white); border-bottom:1px solid var(--border); padding:0 28px; display:flex; align-items:center; justify-content:space-between; height:60px; position:sticky; top:0; z-index:100; box-shadow:var(--shadow); }
+.logo { display:flex; align-items:center; gap:10px; }
+.logo-icon { width:34px; height:34px; background:var(--accent); border-radius:8px; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:14px; }
+.logo-text { font-size:15px; font-weight:700; color:var(--text); }
+.logo-sub { font-size:11px; color:var(--muted); }
+.header-actions { display:flex; align-items:center; gap:10px; }
+.btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:var(--radius-sm); font-size:13px; font-weight:500; cursor:pointer; border:none; font-family:'Inter',sans-serif; transition:all 0.15s; }
+.btn-primary { background:var(--accent); color:white; }
+.btn-primary:hover { background:var(--accent-hover); }
+.btn-outline { background:var(--white); color:var(--text); border:1px solid var(--border2); }
+.btn-outline:hover { background:var(--bg); }
+.btn-danger { background:#fef2f2; color:var(--faulty); border:1px solid #fecaca; }
+.btn-danger:hover { background:#fee2e2; }
+.btn-success { background:var(--active-bg); color:var(--active); border:1px solid #bbf7d0; }
+.btn-success:hover { background:#dcfce7; }
+.btn-sm { padding:5px 10px; font-size:12px; }
 
-  /* LAYOUT */
-  .main { padding: 24px 28px; max-width: 1400px; margin: 0 auto; }
+/* MAIN */
+.main { padding:24px 28px; max-width:1500px; margin:0 auto; }
 
-  /* STAT CARDS */
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 24px; }
-  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; position: relative; overflow: hidden; transition: border-color 0.2s; }
-  .stat-card:hover { border-color: var(--accent); }
-  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--card-color, var(--accent)); }
-  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
-  .stat-value { font-size: 32px; font-weight: 700; line-height: 1; color: var(--card-color, var(--text)); }
-  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 6px; font-family: 'DM Mono', monospace; }
+/* STATS */
+.stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:24px; }
+.stat-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); border-top:3px solid var(--card-color,var(--accent)); }
+.stat-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; font-weight:500; margin-bottom:6px; }
+.stat-value { font-size:28px; font-weight:700; color:var(--card-color,var(--text)); line-height:1; }
+.stat-sub { font-size:11px; color:var(--muted2); margin-top:5px; }
 
-  /* TABS */
-  .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; width: fit-content; }
-  .tab { padding: 7px 18px; border-radius: 7px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--muted); border: none; background: none; font-family: 'Sora', sans-serif; }
-  .tab.active { background: var(--accent); color: white; }
-  .tab:hover:not(.active) { color: var(--text); background: var(--surface2); }
+/* TABS */
+.tabs { display:flex; gap:2px; background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:4px; width:fit-content; margin-bottom:18px; box-shadow:var(--shadow); }
+.tab { padding:7px 20px; border-radius:7px; font-size:13px; font-weight:500; cursor:pointer; border:none; background:none; font-family:'Inter',sans-serif; color:var(--muted); transition:all 0.15s; }
+.tab.active { background:var(--accent); color:white; box-shadow:0 1px 3px rgba(37,99,235,0.3); }
+.tab:hover:not(.active) { background:var(--bg); color:var(--text); }
 
-  /* SEARCH & FILTER */
-  .controls { display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
-  .search-wrap { position: relative; flex: 1; min-width: 220px; }
-  .search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.4; }
-  .search { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px 9px 36px; color: var(--text); font-family: 'Sora', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s; }
-  .search:focus { border-color: var(--accent); }
-  .search::placeholder { color: var(--muted); }
-  .filter-select { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 9px 14px; color: var(--text); font-family: 'Sora', sans-serif; font-size: 12px; outline: none; cursor: pointer; }
-  .filter-select:focus { border-color: var(--accent); }
+/* CONTROLS */
+.controls { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+.search-wrap { position:relative; flex:1; min-width:250px; }
+.search-icon { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--muted2); }
+.search { width:100%; background:var(--white); border:1px solid var(--border); border-radius:var(--radius-sm); padding:9px 12px 9px 34px; color:var(--text); font-family:'Inter',sans-serif; font-size:13px; outline:none; transition:border-color 0.2s; box-shadow:var(--shadow); }
+.search:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
+.search::placeholder { color:var(--muted2); }
+.filter-select { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-sm); padding:9px 12px; color:var(--text); font-family:'Inter',sans-serif; font-size:13px; outline:none; cursor:pointer; box-shadow:var(--shadow); }
+.filter-select:focus { border-color:var(--accent); }
+.result-count { font-size:12px; color:var(--muted); font-family:'JetBrains Mono',monospace; }
 
-  /* TABLE */
-  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  .table-head { display: flex; padding: 0; border-bottom: 1px solid var(--border); }
-  table { width: 100%; border-collapse: collapse; }
-  thead th { padding: 12px 16px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 500; border-bottom: 1px solid var(--border); white-space: nowrap; }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--surface2); }
-  tbody td { padding: 11px 16px; font-size: 13px; vertical-align: middle; }
-  .mono { font-family: 'DM Mono', monospace; font-size: 11px; }
+/* TABLE */
+.table-wrap { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-md); }
+table { width:100%; border-collapse:collapse; }
+thead th { padding:11px 14px; text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); font-weight:600; background:#f8fafc; border-bottom:1px solid var(--border); white-space:nowrap; }
+tbody tr { border-bottom:1px solid var(--border); transition:background 0.1s; }
+tbody tr:last-child { border-bottom:none; }
+tbody tr:hover { background:#f8fafc; }
+tbody td { padding:11px 14px; font-size:13px; vertical-align:middle; }
+.mono { font-family:'JetBrains Mono',monospace; font-size:11px; }
 
-  /* BADGES */
-  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; white-space: nowrap; }
-  .badge-mac { background: rgba(167,139,250,0.15); color: var(--mac); border: 1px solid rgba(167,139,250,0.3); }
-  .badge-win { background: rgba(96,165,250,0.15); color: var(--win); border: 1px solid rgba(96,165,250,0.3); }
-  .badge-linux { background: rgba(52,211,153,0.15); color: var(--linux); border: 1px solid rgba(52,211,153,0.3); }
-  .badge-spare { background: rgba(255,169,77,0.15); color: var(--warn); border: 1px solid rgba(255,169,77,0.3); }
-  .badge-faulty { background: rgba(255,107,107,0.15); color: var(--danger); border: 1px solid rgba(255,107,107,0.3); }
-  .badge-active { background: rgba(56,217,169,0.15); color: var(--accent2); border: 1px solid rgba(56,217,169,0.3); }
-  .badge-warranty { background: rgba(79,142,247,0.15); color: var(--accent); border: 1px solid rgba(79,142,247,0.3); }
-  .badge-oow { background: rgba(107,114,128,0.15); color: var(--muted); border: 1px solid rgba(107,114,128,0.3); }
+/* BADGES */
+.badge { display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:500; white-space:nowrap; }
+.badge-mac { background:var(--mac-bg); color:var(--mac); }
+.badge-win { background:var(--win-bg); color:var(--win); }
+.badge-linux { background:var(--linux-bg); color:var(--linux); }
+.badge-spare { background:var(--spare-bg); color:var(--spare); }
+.badge-faulty { background:var(--faulty-bg); color:var(--faulty); }
+.badge-active { background:var(--active-bg); color:var(--active); }
+.badge-warranty { background:var(--warranty-bg); color:var(--warranty); }
+.badge-oow { background:var(--oow-bg); color:var(--oow); border:1px solid var(--border); }
 
-  /* USER VIEW */
-  .user-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
-  .user-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; transition: border-color 0.2s; }
-  .user-card:hover { border-color: var(--accent); }
-  .user-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
-  .user-count { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-bottom: 14px; }
-  .user-assets { display: flex; flex-direction: column; gap: 6px; }
-  .asset-row { display: flex; align-items: center; gap: 8px; padding: 7px 10px; background: var(--surface2); border-radius: 7px; font-size: 12px; }
-  .asset-icon { width: 20px; text-align: center; font-size: 14px; }
-  .asset-info { flex: 1; }
-  .asset-id { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); }
+/* ACTION BUTTONS */
+.action-btns { display:flex; gap:6px; }
+.icon-btn { width:28px; height:28px; border-radius:6px; border:1px solid var(--border); background:var(--white); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; font-size:13px; }
+.icon-btn:hover { background:var(--bg); border-color:var(--border2); }
+.icon-btn.edit:hover { background:#eff6ff; border-color:#bfdbfe; color:var(--accent); }
+.icon-btn.del:hover { background:#fef2f2; border-color:#fecaca; color:var(--faulty); }
 
-  /* EMPTY */
-  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
-  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+/* MODAL */
+.overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,0.4); z-index:200; align-items:center; justify-content:center; backdrop-filter:blur(2px); }
+.overlay.open { display:flex; }
+.modal { background:var(--white); border-radius:14px; width:90%; max-width:680px; max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-lg); animation:slideUp 0.2s ease; }
+@keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+.modal-header { padding:20px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.modal-title { font-size:16px; font-weight:600; }
+.modal-close { width:32px; height:32px; border-radius:6px; border:1px solid var(--border); background:var(--white); cursor:pointer; font-size:18px; color:var(--muted); display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+.modal-close:hover { background:var(--bg); }
+.modal-body { padding:24px; }
+.modal-footer { padding:16px 24px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; }
 
-  /* PAGINATION */
-  .pagination { display: flex; align-items: center; gap: 8px; margin-top: 16px; justify-content: flex-end; }
-  .page-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: 'Sora', sans-serif; transition: all 0.15s; }
-  .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
-  .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .page-info { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+/* FORM */
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.form-group { display:flex; flex-direction:column; gap:5px; }
+.form-group.full { grid-column:1/-1; }
+label { font-size:12px; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+input, select, textarea { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-sm); padding:9px 12px; color:var(--text); font-family:'Inter',sans-serif; font-size:13px; outline:none; transition:border-color 0.2s; width:100%; }
+input:focus, select:focus, textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
+textarea { resize:vertical; min-height:70px; }
 
-  /* WARRANTY CHART */
-  .mini-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 6px; overflow: hidden; }
-  .mini-fill { height: 100%; border-radius: 2px; background: var(--accent2); }
-  .section-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; }
+/* USER CARDS */
+.user-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px; }
+.user-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); transition:box-shadow 0.2s; }
+.user-card:hover { box-shadow:var(--shadow-md); }
+.user-name { font-weight:600; font-size:14px; color:var(--text); margin-bottom:3px; }
+.user-count { font-size:11px; color:var(--muted); font-family:'JetBrains Mono',monospace; margin-bottom:12px; }
+.user-assets { display:flex; flex-direction:column; gap:6px; }
+.asset-item { display:flex; align-items:center; gap:8px; padding:8px 10px; background:var(--bg); border-radius:7px; border:1px solid var(--border); }
+.asset-item-info { flex:1; }
+.asset-item-name { font-size:12px; font-weight:500; }
+.asset-item-id { font-size:10px; color:var(--muted); font-family:'JetBrains Mono',monospace; }
 
-  .tag { display: inline-block; font-size: 10px; font-family: 'DM Mono', monospace; padding: 2px 7px; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); margin: 2px; }
+/* PAGINATION */
+.pagination { display:flex; align-items:center; gap:8px; margin-top:16px; justify-content:space-between; }
+.page-btns { display:flex; gap:6px; }
+.page-btn { background:var(--white); border:1px solid var(--border); color:var(--text); border-radius:var(--radius-sm); padding:7px 14px; font-size:12px; cursor:pointer; font-family:'Inter',sans-serif; transition:all 0.15s; box-shadow:var(--shadow); }
+.page-btn:hover:not(:disabled) { border-color:var(--accent); color:var(--accent); background:var(--accent-light); }
+.page-btn:disabled { opacity:0.4; cursor:not-allowed; }
+.page-info { font-size:12px; color:var(--muted); font-family:'JetBrains Mono',monospace; }
+
+/* EMPTY */
+.empty { text-align:center; padding:60px 20px; color:var(--muted2); }
+.empty-icon { font-size:40px; margin-bottom:10px; }
+
+/* TOAST */
+.toast { position:fixed; bottom:24px; right:24px; background:var(--text); color:white; padding:12px 20px; border-radius:var(--radius-sm); font-size:13px; font-weight:500; z-index:999; box-shadow:var(--shadow-lg); animation:fadeInUp 0.3s ease; display:none; }
+@keyframes fadeInUp { from{transform:translateY(10px);opacity:0} to{transform:translateY(0);opacity:1} }
+
+/* DELETE CONFIRM */
+.confirm-modal { background:var(--white); border-radius:14px; width:90%; max-width:400px; padding:28px; box-shadow:var(--shadow-lg); animation:slideUp 0.2s ease; text-align:center; }
+.confirm-icon { font-size:40px; margin-bottom:12px; }
+.confirm-title { font-size:16px; font-weight:600; margin-bottom:8px; }
+.confirm-desc { font-size:13px; color:var(--muted); margin-bottom:20px; line-height:1.6; }
+.confirm-btns { display:flex; gap:10px; justify-content:center; }
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <div class="header">
   <div class="logo">
-    <div class="logo-dot"></div>
+    <div class="logo-icon">DS</div>
     <div>
       <div class="logo-text">Data Sutram</div>
       <div class="logo-sub">Asset Inventory Dashboard</div>
     </div>
   </div>
-  <div class="header-right">Last updated: April 2025 &nbsp;|&nbsp; 92 records</div>
+  <div class="header-actions">
+    <span class="result-count" id="headerCount"></span>
+    <button class="btn btn-primary" onclick="openAddModal()">＋ Add Asset</button>
+  </div>
 </div>
 
+<!-- MAIN -->
 <div class="main">
   <!-- STATS -->
   <div class="stats-grid" id="statsGrid"></div>
 
   <!-- TABS -->
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('all')">All Assets</button>
-    <button class="tab" onclick="switchTab('user')">By User</button>
-    <button class="tab" onclick="switchTab('spare')">Spare / IT</button>
-    <button class="tab" onclick="switchTab('faulty')">Faulty</button>
+    <button class="tab active" onclick="switchTab('all',this)">All Assets</button>
+    <button class="tab" onclick="switchTab('user',this)">By User</button>
+    <button class="tab" onclick="switchTab('spare',this)">Spare / IT</button>
+    <button class="tab" onclick="switchTab('faulty',this)">Faulty</button>
   </div>
 
   <!-- CONTROLS -->
   <div class="controls">
     <div class="search-wrap">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input class="search" id="searchInput" placeholder="Search by name, asset ID, serial, brand..." oninput="filterData()">
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input class="search" id="searchInput" placeholder="Search by name, asset ID, serial number, brand..." oninput="filterAndRender()">
     </div>
-    <select class="filter-select" id="brandFilter" onchange="filterData()">
+    <select class="filter-select" id="brandFilter" onchange="filterAndRender()">
       <option value="">All Brands</option>
     </select>
-    <select class="filter-select" id="statusFilter" onchange="filterData()">
-      <option value="">All Status</option>
-      <option value="active">Active (In Use)</option>
-      <option value="spare">Spare / With IT</option>
-      <option value="faulty">Faulty / Repair</option>
-      <option value="mac">MacBook</option>
+    <select class="filter-select" id="osFilter" onchange="filterAndRender()">
+      <option value="">All OS Types</option>
+      <option value="mac">MacBook / Apple</option>
       <option value="windows">Windows</option>
       <option value="linux">Linux</option>
     </select>
-    <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)" id="resultCount"></div>
+    <select class="filter-select" id="warrantyFilter" onchange="filterAndRender()">
+      <option value="">All Warranty</option>
+      <option value="In Warranty">In Warranty</option>
+      <option value="Out of Warranty">Out of Warranty</option>
+    </select>
   </div>
 
   <!-- TABLE VIEW -->
@@ -166,24 +231,27 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>Employee</th>
+            <th>Employee Name</th>
             <th>Asset ID</th>
             <th>Brand</th>
-            <th>Type</th>
+            <th>OS Type</th>
             <th>Serial No.</th>
             <th>RAM</th>
             <th>Warranty</th>
             <th>Status</th>
             <th>Remark</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
       </table>
     </div>
     <div class="pagination">
-      <button class="page-btn" id="prevBtn" onclick="changePage(-1)">← Prev</button>
       <span class="page-info" id="pageInfo"></span>
-      <button class="page-btn" id="nextBtn" onclick="changePage(1)">Next →</button>
+      <div class="page-btns">
+        <button class="page-btn" id="prevBtn" onclick="changePage(-1)">← Prev</button>
+        <button class="page-btn" id="nextBtn" onclick="changePage(1)">Next →</button>
+      </div>
     </div>
   </div>
 
@@ -193,181 +261,288 @@
   </div>
 </div>
 
+<!-- ADD / EDIT MODAL -->
+<div class="overlay" id="formOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Add New Asset</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Employee Name *</label>
+          <input id="f_name" placeholder="e.g. Abhishek Kadam">
+        </div>
+        <div class="form-group">
+          <label>Asset ID</label>
+          <input id="f_id" placeholder="e.g. DS/LP/61">
+        </div>
+        <div class="form-group">
+          <label>Brand *</label>
+          <select id="f_brand">
+            <option value="">Select Brand</option>
+            <option>Apple</option>
+            <option>Asus</option>
+            <option>Asus Vivobook</option>
+            <option>HP</option>
+            <option>LENOVO</option>
+            <option>Dell</option>
+            <option>Mac Mini</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>OS Type *</label>
+          <select id="f_os">
+            <option value="windows">Windows</option>
+            <option value="mac">Mac / Apple</option>
+            <option value="linux">Linux</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Serial Number</label>
+          <input id="f_serial" placeholder="e.g. N2NXCV15Z192084">
+        </div>
+        <div class="form-group">
+          <label>RAM</label>
+          <select id="f_ram">
+            <option value="8GB">8GB</option>
+            <option value="16GB">16GB</option>
+            <option value="32GB">32GB</option>
+            <option value="—">Unknown</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Warranty Status</label>
+          <select id="f_warranty">
+            <option value="In Warranty">In Warranty</option>
+            <option value="Out of Warranty">Out of Warranty</option>
+            <option value="—">Unknown</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Asset Status *</label>
+          <select id="f_category">
+            <option value="active">Active / In Use</option>
+            <option value="spare">Spare / With IT</option>
+            <option value="faulty">Faulty / Repair</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Remark</label>
+          <textarea id="f_remark" placeholder="e.g. MacBook Air M4, Out of warranty, Motherboard issue..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAsset()">💾 Save Asset</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="overlay" id="deleteOverlay">
+  <div class="confirm-modal">
+    <div class="confirm-icon">🗑️</div>
+    <div class="confirm-title">Delete Asset?</div>
+    <div class="confirm-desc" id="deleteDesc">Are you sure you want to delete this asset? This action cannot be undone.</div>
+    <div class="confirm-btns">
+      <button class="btn btn-outline" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
 <script>
-const raw = [
-  {n:"Alok Anil Mani",id:"DS/MAC/25/11",brand:"Apple",serial:"FNJVHKDX0N",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
-  {n:"Aisik Paul",id:"DS/MAC/25/13",brand:"Apple",serial:"J5GW0MH4WTM",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
-  {n:"With IT (Anshul Kashyap) — Damage",id:"DS/LP/02",brand:"HP",serial:"5CD2118XCN",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"Damaged",category:"faulty"},
-  {n:"Arnab Samiran Nandi",id:"DS/LP/16",brand:"—",serial:"—",ram:"—",os:"windows",warranty:"—",remark:"",category:"active"},
-  {n:"Vikas Yadav",id:"DS/CD/01",brand:"—",serial:"—",ram:"—",os:"windows",warranty:"—",remark:"Company Desktop",category:"active"},
-  {n:"Souvik China",id:"DS/MAC/25/16",brand:"Apple",serial:"LVL441D652",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
-  {n:"Dipayan Basu",id:"DS/MAC/25/15",brand:"Apple",serial:"JWDWTXQTM7",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
-  {n:"Manikandan Mohandas",id:"DS/LP/17",brand:"Asus",serial:"N2NXCV15Z29808A",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Payal Rodrigues",id:"DS/LP/25",brand:"Asus",serial:"N2NXCV15Z21408B",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Akanksha Walia",id:"DS/LP/62",brand:"LENOVO",serial:"PF3A2JKT",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Spare With IT (Ritam Deb)",id:"DS/LP/18",brand:"Asus",serial:"N2NXCV15Z441084",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"spare"},
-  {n:"Yashraj Dangre",id:"DS/LP/50",brand:"Asus",serial:"K2308N0117655",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Amneek Singh",id:"DS/LP/43",brand:"Asus",serial:"N2NXCV15Z409088",ram:"16GB",os:"linux",warranty:"Out of Warranty",remark:"Take Handover",category:"active"},
-  {n:"Ankit Das",id:"—",brand:"HP",serial:"CND2243LPZ",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Snehal Salvi",id:"DS/LP/22",brand:"Asus",serial:"N2NXCV15Z18908E",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Spare With IT",id:"DS/LP/33",brand:"Asus",serial:"N2NXCV15Z48808A",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"spare"},
-  {n:"Kaushik Vedpathak",id:"DS/LP/55",brand:"Asus Vivobook",serial:"R9N0CV14Z77038D",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
-  {n:"Yasmin Ansari",id:"DS/LP/70",brand:"Asus Vivobook",serial:"R8N0CV05Y36732D",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
-  {n:"Manthan Jadhav",id:"DS/LP/66",brand:"Asus",serial:"R7N0CV12A210298",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"In Warranty",category:"active"},
-  {n:"Annu Tejpal Sharma",id:"DS/LP/57",brand:"Asus Vivobook",serial:"R7N0CV21X05031E",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"Take Handover",category:"active"},
-  {n:"Indranil Partha Sarathi Chowdhury",id:"DS/LP/30",brand:"Asus",serial:"N9N0CV116283389",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"Take Handover",category:"active"},
-  {n:"Archisha Chidumalla",id:"DS/MAC/25/02",brand:"Apple",serial:"FX9T395V6G",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
-  {n:"Ravit Kyal",id:"DS/LP/74",brand:"LENOVO",serial:"PF4YVP91",ram:"8GB",os:"windows",warranty:"In Warranty",remark:"In Warranty",category:"active"},
-  {n:"Faiz Alam",id:"DS/LP/39",brand:"Asus",serial:"N2NXCV15Z453084",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Sanjay Kumar",id:"DS/LP/73",brand:"Asus Vivobook",serial:"R3N0CV16T041138",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"Take Handover",category:"active"},
-  {n:"Priyanshi Soni",id:"DS/MAC/25/07",brand:"Apple",serial:"FG26Y6P94X",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
-  {n:"With IT",id:"DS/LP/42",brand:"Asus",serial:"N2NXCV15Z38008E",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"spare"},
-  {n:"Ritam Deb",id:"DS/LP/20",brand:"Asus",serial:"N2XNXCV15Z23408B",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Gaurav Soni",id:"DS/MAC/25/01",brand:"Apple",serial:"LFVQ9VY6K0",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
-  {n:"Sagar Das",id:"DS/LP/31",brand:"Asus",serial:"N2NXCV15Z50108A",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"With IT",id:"DS/LP/41",brand:"Asus",serial:"N2NXCV15Z326088",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"spare"},
-  {n:"Akshay Kapoor",id:"DS/LP/29",brand:"Asus Vivobook",serial:"N9N0CV11621938B",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Dev Naliapara",id:"DS/LP/24",brand:"Asus",serial:"N2NXCV15Z318088",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Vikas Yadav",id:"DS/LP/38",brand:"Asus",serial:"N2NXCV15Z59108A",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Vikrant Patil",id:"DS/LP/51",brand:"Asus Vivobook",serial:"NBN0CV00948344G",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Tarun Kumar",id:"DS/LP/67",brand:"Asus",serial:"R8N0CV05Y067324",ram:"16GB",os:"linux",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
-  {n:"With IT — Motherboard BIOS Problem",id:"DS/LP/19",brand:"Asus",serial:"N2NXCV15Z333087",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"Motherboard/BIOS issue",category:"faulty"},
-  {n:"Ketan Purohit",id:"DS/LP/46",brand:"Asus Vivobook",serial:"N2NXCV15Z38508H",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Vinod Patil",id:"DS/LP/34",brand:"Asus",serial:"N2NXCV15Z563089",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Omkar Shankar Deshmukh",id:"DS/LP/48",brand:"Asus Vivobook",serial:"NBN0CV009487448",ram:"16GB",os:"linux",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Santosh Hanumanta Kamble",id:"DS/LP/64",brand:"Asus Vivobook",serial:"R3N0CV144105127",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Akshay Ashok Suralkar",id:"DS/LP/23",brand:"Asus",serial:"N2NXCV15Z192084",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Prasad Rajendra Mahadik",id:"DS/LP/53",brand:"Asus Vivobook",serial:"NBN0CV00954444E",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Mitul Shashank Desai",id:"DS/LP/52",brand:"Asus Vivobook",serial:"R5N0CV14L68321E",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Rahul Varma Nidadavolu",id:"DS/LP/54",brand:"Asus Vivobook",serial:"R3N0CV16T55013F",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
-  {n:"Sumaiya Muskan",id:"DS/LP/60",brand:"Asus Vivobook",serial:"R3N0CV16T021137",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
-  {n:"Deepak Manik Gore",id:"DS/LP/56",brand:"Asus Vivobook",serial:"R7N0CV21X058319",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
-  {n:"Ishika Sethi",id:"DS/LP/71",brand:"Asus Vivobook",serial:"R3N0CV16T40213A",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
-  {n:"Saad Shaikh",id:"DS/LP/72",brand:"Asus Vivobook",serial:"R3N0CV16T070139",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"Take handover",category:"active"},
-  {n:"Taha Saifee",id:"DS/LP/68",brand:"Asus Vivobook",serial:"R6N0CV13625825B",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
-  {n:"Chinmay Kulkarni",id:"DS/LP/69",brand:"Asus Vivobook",serial:"R8N0CV05Y319323",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
-  {n:"Siddhesh Kedari",id:"DS-LP-45",brand:"Asus",serial:"N2NXCV15Z409088",ram:"16GB",os:"linux",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"WITH IT",id:"DS/LP/35",brand:"Asus",serial:"N2NXCV15Z407085",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"spare"},
-  {n:"Spare With IT",id:"DS/LP/54",brand:"—",serial:"—",ram:"—",os:"windows",warranty:"—",remark:"",category:"spare"},
-  {n:"Rishab Jain (Bangalore)",id:"DS/LP/32",brand:"Asus",serial:"N2NXCV15Z394080",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"Mouse pad issue",category:"active"},
-  {n:"With IT — Display Cable / Fabrication",id:"DS/LP/21",brand:"Asus",serial:"N2NXCV15Z235083",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"Display cable issue",category:"faulty"},
-  {n:"Shreyan Ghosh",id:"DS/LP/44",brand:"Asus",serial:"N2NXCV15Z355084",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Given to Rakshit (7-12-2024)",id:"DS/LP/14",brand:"Asus",serial:"M9N0CV16B60838B",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Punit Pal",id:"DS/LP/49",brand:"Asus",serial:"9S714JK12218ZN8000033",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Varad Deshpande",id:"DS/LP/09",brand:"HP",serial:"5CD2253ZL2",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Rajit Bhattacharya",id:"DS/MAC/02",brand:"Mac Mini",serial:"KGHMQX6JR4",ram:"8GB",os:"mac",warranty:"Out of Warranty",remark:"Apple M3 Mac Mini",category:"active"},
-  {n:"Vijaya Likhita (Delhi)",id:"DS/LP/13",brand:"HP",serial:"5CD224F9XQ",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"With IT — Faulty Motherboard",id:"DS/LP/47",brand:"Asus Vivobook",serial:"N9N0CV116291386",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"Motherboard issue",category:"faulty"},
-  {n:"With IT — Faulty Touchpad & Keyboard",id:"DS/LP/40",brand:"Asus",serial:"N2NXCV15Z32308D",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"Touchpad & Keyboard issue",category:"faulty"},
-  {n:"Sachin Bagade",id:"DS/LP/04",brand:"HP",serial:"5CD2118MHP",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Abhishek Kadam",id:"DS/LP/61",brand:"Asus Vivobook",serial:"NBN0CV00952144C",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Niladri Paramanik",id:"DS/LP/63",brand:"Asus Vivobook",serial:"R3N0CV144124129",ram:"16GB",os:"linux",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Mihir Ketkar — With Ravit",id:"DS/LP/65",brand:"LENOVO",serial:"PF48Y8QV",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Bharat Kadam",id:"DS/LP/11",brand:"HP",serial:"5CD212BZXH",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Mayank Khurana",id:"DS/LP/15",brand:"HP",serial:"5CD2118N2N",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Sakshi Yerunkar",id:"DS/LP/03",brand:"LENOVO",serial:"PF3A3CQG",ram:"8GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
-  {n:"Preeti (Bangalore)",id:"DS/LP/05",brand:"HP",serial:"5CD2253ZW9",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Sudeep Pathak",id:"DS/LP/06",brand:"HP",serial:"5CD224F9TZ",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Atharva Pathak",id:"DS/LP/58",brand:"Asus Vivobook",serial:"R7N0CV21X16931D",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
-  {n:"Nishal Dbritto",id:"DS/LP/08",brand:"Lenovo",serial:"PF3A1B1Q",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Shaiban Bhiwandiwalla (With IT)",id:"DS/LP/10",brand:"LENOVO",serial:"PF3A1MQE",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"spare"},
-  {n:"Piyusha Gupta (Delhi)",id:"DS/LP/01",brand:"LENOVO",serial:"PF3A1DMT",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Vishal Shaw",id:"DS/LP/27",brand:"Asus",serial:"N9N0CV10K627389",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
-  {n:"Rakshit Lakhani",id:"DS/LP/76",brand:"Dell",serial:"BMOM344",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"Dell warranty",category:"active"},
-  {n:"Kranti Kumar",id:"DS/MAC/25/08",brand:"Apple",serial:"GW3F00FV2Q",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
-  {n:"Rahul Maskara",id:"DS/MAC/25/06",brand:"Apple",serial:"F6R9XCF7CC",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
-  {n:"Sarfaraz Ahamed",id:"DS/MAC/25/09",brand:"Apple",serial:"D6WGCDFCWY",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
-  {n:"Ketan Samant",id:"DS/LP/59",brand:"Asus Vivobook",serial:"R3N0CV16598513D",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
-  {n:"Siddharth Kakkad",id:"DS/MAC/25/14",brand:"Apple",serial:"JLQ04J41TQ",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
-  {n:"Anshul Kashyap",id:"DS/LP/75",brand:"Asus",serial:"—",ram:"—",os:"windows",warranty:"—",remark:"",category:"active"},
-  {n:"Spare With IT (Saad Shaikh)",id:"DS/LP/72",brand:"Asus Vivobook",serial:"R3N0CV16T070139",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"",category:"spare"},
-  {n:"Reshma Jain",id:"DS/LP/77",brand:"HP",serial:"5CG51148WJ",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"3yr warranty",category:"active"},
-  {n:"Rajesh Wadhawa",id:"—",brand:"—",serial:"—",ram:"—",os:"windows",warranty:"—",remark:"",category:"active"},
-  {n:"Malavika Mallya",id:"DS/MAC/25/17",brand:"Apple",serial:"KGWM4LPGPW",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
-  {n:"Spare With IT",id:"DS/LP/37",brand:"Asus",serial:"N2NXCV15Z34308A",ram:"16GB",os:"windows",warranty:"—",remark:"",category:"spare"},
-  {n:"Spare With IT (Annu Sharma)",id:"DS/LP/57",brand:"Asus Vivobook",serial:"R7N0CV21X05031E",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"",category:"spare"},
-  {n:"Spare (Indranil Partha)",id:"DS/LP/30",brand:"Asus",serial:"N9N0CV116283389",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"spare"},
+// ── DEFAULT DATA ────────────────────────────────────────────────
+const defaultData = [
+  {id:"DS/MAC/25/11",n:"Alok Anil Mani",brand:"Apple",serial:"FNJVHKDX0N",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
+  {id:"DS/MAC/25/13",n:"Aisik Paul",brand:"Apple",serial:"J5GW0MH4WTM",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
+  {id:"DS/LP/02",n:"With IT (Anshul Kashyap) — Damage",brand:"HP",serial:"5CD2118XCN",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"Damaged",category:"faulty"},
+  {id:"DS/LP/16",n:"Arnab Samiran Nandi",brand:"—",serial:"—",ram:"—",os:"windows",warranty:"—",remark:"",category:"active"},
+  {id:"DS/CD/01",n:"Vikas Yadav",brand:"—",serial:"—",ram:"—",os:"windows",warranty:"—",remark:"Company Desktop",category:"active"},
+  {id:"DS/MAC/25/16",n:"Souvik China",brand:"Apple",serial:"LVL441D652",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
+  {id:"DS/MAC/25/15",n:"Dipayan Basu",brand:"Apple",serial:"JWDWTXQTM7",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
+  {id:"DS/LP/17",n:"Manikandan Mohandas",brand:"Asus",serial:"N2NXCV15Z29808A",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/25",n:"Payal Rodrigues",brand:"Asus",serial:"N2NXCV15Z21408B",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/62",n:"Akanksha Walia",brand:"LENOVO",serial:"PF3A2JKT",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/18",n:"Spare With IT (Ritam Deb)",brand:"Asus",serial:"N2NXCV15Z441084",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"spare"},
+  {id:"DS/LP/50",n:"Yashraj Dangre",brand:"Asus",serial:"K2308N0117655",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/43",n:"Amneek Singh",brand:"Asus",serial:"N2NXCV15Z409088",ram:"16GB",os:"linux",warranty:"Out of Warranty",remark:"Take Handover",category:"active"},
+  {id:"—",n:"Ankit Das",brand:"HP",serial:"CND2243LPZ",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/22",n:"Snehal Salvi",brand:"Asus",serial:"N2NXCV15Z18908E",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/33",n:"Spare With IT",brand:"Asus",serial:"N2NXCV15Z48808A",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"spare"},
+  {id:"DS/LP/55",n:"Kaushik Vedpathak",brand:"Asus Vivobook",serial:"R9N0CV14Z77038D",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
+  {id:"DS/LP/70",n:"Yasmin Ansari",brand:"Asus Vivobook",serial:"R8N0CV05Y36732D",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
+  {id:"DS/LP/66",n:"Manthan Jadhav",brand:"Asus",serial:"R7N0CV12A210298",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"In Warranty",category:"active"},
+  {id:"DS/LP/57",n:"Annu Tejpal Sharma",brand:"Asus Vivobook",serial:"R7N0CV21X05031E",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"Take Handover",category:"active"},
+  {id:"DS/LP/30",n:"Indranil Partha Sarathi Chowdhury",brand:"Asus",serial:"N9N0CV116283389",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"Take Handover",category:"active"},
+  {id:"DS/MAC/25/02",n:"Archisha Chidumalla",brand:"Apple",serial:"FX9T395V6G",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
+  {id:"DS/LP/74",n:"Ravit Kyal",brand:"LENOVO",serial:"PF4YVP91",ram:"8GB",os:"windows",warranty:"In Warranty",remark:"In Warranty",category:"active"},
+  {id:"DS/LP/39",n:"Faiz Alam",brand:"Asus",serial:"N2NXCV15Z453084",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/73",n:"Sanjay Kumar",brand:"Asus Vivobook",serial:"R3N0CV16T041138",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"Take Handover",category:"active"},
+  {id:"DS/MAC/25/07",n:"Priyanshi Soni",brand:"Apple",serial:"FG26Y6P94X",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
+  {id:"DS/LP/42",n:"With IT",brand:"Asus",serial:"N2NXCV15Z38008E",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"spare"},
+  {id:"DS/LP/20",n:"Ritam Deb",brand:"Asus",serial:"N2XNXCV15Z23408B",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/MAC/25/01",n:"Gaurav Soni",brand:"Apple",serial:"LFVQ9VY6K0",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
+  {id:"DS/LP/31",n:"Sagar Das",brand:"Asus",serial:"N2NXCV15Z50108A",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/41",n:"With IT",brand:"Asus",serial:"N2NXCV15Z326088",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"spare"},
+  {id:"DS/LP/29",n:"Akshay Kapoor",brand:"Asus Vivobook",serial:"N9N0CV11621938B",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/24",n:"Dev Naliapara",brand:"Asus",serial:"N2NXCV15Z318088",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/38",n:"Vikas Yadav",brand:"Asus",serial:"N2NXCV15Z59108A",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/51",n:"Vikrant Patil",brand:"Asus Vivobook",serial:"NBN0CV00948344G",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/67",n:"Tarun Kumar",brand:"Asus",serial:"R8N0CV05Y067324",ram:"16GB",os:"linux",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
+  {id:"DS/LP/19",n:"With IT — Motherboard BIOS Problem",brand:"Asus",serial:"N2NXCV15Z333087",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"Motherboard/BIOS issue",category:"faulty"},
+  {id:"DS/LP/46",n:"Ketan Purohit",brand:"Asus Vivobook",serial:"N2NXCV15Z38508H",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/34",n:"Vinod Patil",brand:"Asus",serial:"N2NXCV15Z563089",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/48",n:"Omkar Shankar Deshmukh",brand:"Asus Vivobook",serial:"NBN0CV009487448",ram:"16GB",os:"linux",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/64",n:"Santosh Hanumanta Kamble",brand:"Asus Vivobook",serial:"R3N0CV144105127",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/23",n:"Akshay Ashok Suralkar",brand:"Asus",serial:"N2NXCV15Z192084",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/53",n:"Prasad Rajendra Mahadik",brand:"Asus Vivobook",serial:"NBN0CV00954444E",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/52",n:"Mitul Shashank Desai",brand:"Asus Vivobook",serial:"R5N0CV14L68321E",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/54",n:"Rahul Varma Nidadavolu",brand:"Asus Vivobook",serial:"R3N0CV16T55013F",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
+  {id:"DS/LP/60",n:"Sumaiya Muskan",brand:"Asus Vivobook",serial:"R3N0CV16T021137",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
+  {id:"DS/LP/56",n:"Deepak Manik Gore",brand:"Asus Vivobook",serial:"R7N0CV21X058319",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
+  {id:"DS/LP/71",n:"Ishika Sethi",brand:"Asus Vivobook",serial:"R3N0CV16T40213A",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
+  {id:"DS/LP/72",n:"Saad Shaikh",brand:"Asus Vivobook",serial:"R3N0CV16T070139",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"Take handover",category:"active"},
+  {id:"DS/LP/68",n:"Taha Saifee",brand:"Asus Vivobook",serial:"R6N0CV13625825B",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
+  {id:"DS/LP/69",n:"Chinmay Kulkarni",brand:"Asus Vivobook",serial:"R8N0CV05Y319323",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
+  {id:"DS-LP-45",n:"Siddhesh Kedari",brand:"Asus",serial:"N2NXCV15Z409088",ram:"16GB",os:"linux",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/35",n:"WITH IT",brand:"Asus",serial:"N2NXCV15Z407085",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"spare"},
+  {id:"DS/LP/32",n:"Rishab Jain (Bangalore)",brand:"Asus",serial:"N2NXCV15Z394080",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"Mouse pad issue",category:"active"},
+  {id:"DS/LP/21",n:"With IT — Display Cable / Fabrication",brand:"Asus",serial:"N2NXCV15Z235083",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"Display cable issue",category:"faulty"},
+  {id:"DS/LP/44",n:"Shreyan Ghosh",brand:"Asus",serial:"N2NXCV15Z355084",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/14",n:"Given to Rakshit (7-12-2024)",brand:"Asus",serial:"M9N0CV16B60838B",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/49",n:"Punit Pal",brand:"Asus",serial:"9S714JK12218ZN8000033",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/09",n:"Varad Deshpande",brand:"HP",serial:"5CD2253ZL2",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/MAC/02",n:"Rajit Bhattacharya",brand:"Mac Mini",serial:"KGHMQX6JR4",ram:"8GB",os:"mac",warranty:"Out of Warranty",remark:"Apple M3 Mac Mini",category:"active"},
+  {id:"DS/LP/13",n:"Vijaya Likhita (Delhi)",brand:"HP",serial:"5CD224F9XQ",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/47",n:"With IT — Faulty Motherboard",brand:"Asus Vivobook",serial:"N9N0CV116291386",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"Motherboard issue",category:"faulty"},
+  {id:"DS/LP/40",n:"With IT — Faulty Touchpad & Keyboard",brand:"Asus",serial:"N2NXCV15Z32308D",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"Touchpad & Keyboard issue",category:"faulty"},
+  {id:"DS/LP/04",n:"Sachin Bagade",brand:"HP",serial:"5CD2118MHP",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/61",n:"Abhishek Kadam",brand:"Asus Vivobook",serial:"NBN0CV00952144C",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/63",n:"Niladri Paramanik",brand:"Asus Vivobook",serial:"R3N0CV144124129",ram:"16GB",os:"linux",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/65",n:"Mihir Ketkar — With Ravit",brand:"LENOVO",serial:"PF48Y8QV",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/11",n:"Bharat Kadam",brand:"HP",serial:"5CD212BZXH",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/15",n:"Mayank Khurana",brand:"HP",serial:"5CD2118N2N",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/03",n:"Sakshi Yerunkar",brand:"LENOVO",serial:"PF3A3CQG",ram:"8GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
+  {id:"DS/LP/05",n:"Preeti (Bangalore)",brand:"HP",serial:"5CD2253ZW9",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/06",n:"Sudeep Pathak",brand:"HP",serial:"5CD224F9TZ",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/58",n:"Atharva Pathak",brand:"Asus Vivobook",serial:"R7N0CV21X16931D",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
+  {id:"DS/LP/08",n:"Nishal Dbritto",brand:"Lenovo",serial:"PF3A1B1Q",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/10",n:"Shaiban Bhiwandiwalla (With IT)",brand:"LENOVO",serial:"PF3A1MQE",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"spare"},
+  {id:"DS/LP/01",n:"Piyusha Gupta (Delhi)",brand:"LENOVO",serial:"PF3A1DMT",ram:"8GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/27",n:"Vishal Shaw",brand:"Asus",serial:"N9N0CV10K627389",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"active"},
+  {id:"DS/LP/76",n:"Rakshit Lakhani",brand:"Dell",serial:"BMOM344",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"Dell warranty",category:"active"},
+  {id:"DS/MAC/25/08",n:"Kranti Kumar",brand:"Apple",serial:"GW3F00FV2Q",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
+  {id:"DS/MAC/25/06",n:"Rahul Maskara",brand:"Apple",serial:"F6R9XCF7CC",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
+  {id:"DS/MAC/25/09",n:"Sarfaraz Ahamed",brand:"Apple",serial:"D6WGCDFCWY",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
+  {id:"DS/LP/59",n:"Ketan Samant",brand:"Asus Vivobook",serial:"R3N0CV16598513D",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"2yr warranty",category:"active"},
+  {id:"DS/MAC/25/14",n:"Siddharth Kakkad",brand:"Apple",serial:"JLQ04J41TQ",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
+  {id:"DS/LP/75",n:"Anshul Kashyap",brand:"Asus",serial:"—",ram:"—",os:"windows",warranty:"—",remark:"",category:"active"},
+  {id:"DS/LP/72",n:"Spare With IT (Saad Shaikh)",brand:"Asus Vivobook",serial:"R3N0CV16T070139",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"",category:"spare"},
+  {id:"DS/LP/77",n:"Reshma Jain",brand:"HP",serial:"5CG51148WJ",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"3yr warranty",category:"active"},
+  {id:"DS/MAC/25/17",n:"Malavika Mallya",brand:"Apple",serial:"KGWM4LPGPW",ram:"16GB",os:"mac",warranty:"In Warranty",remark:"MacBook Air M4",category:"active"},
+  {id:"DS/LP/37",n:"Spare With IT",brand:"Asus",serial:"N2NXCV15Z34308A",ram:"16GB",os:"windows",warranty:"—",remark:"",category:"spare"},
+  {id:"DS/LP/57",n:"Spare With IT (Annu Sharma)",brand:"Asus Vivobook",serial:"R7N0CV21X05031E",ram:"16GB",os:"windows",warranty:"In Warranty",remark:"",category:"spare"},
+  {id:"DS/LP/30",n:"Spare (Indranil Partha)",brand:"Asus",serial:"N9N0CV116283389",ram:"16GB",os:"windows",warranty:"Out of Warranty",remark:"",category:"spare"},
 ];
 
-let currentTab = 'all';
+// ── STATE ───────────────────────────────────────────────────────
+function loadData() {
+  try {
+    const saved = localStorage.getItem('ds_assets');
+    return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultData));
+  } catch(e) { return JSON.parse(JSON.stringify(defaultData)); }
+}
+function saveData() {
+  try { localStorage.setItem('ds_assets', JSON.stringify(assets)); } catch(e) {}
+}
+
+let assets = loadData();
+let filtered = [...assets];
 let currentPage = 1;
 const pageSize = 20;
-let filtered = [...raw];
+let currentTab = 'all';
+let editIndex = null;
+let deleteIndex = null;
 
-function getOsBadge(os) {
-  if (os === 'mac') return '<span class="badge badge-mac">MacBook</span>';
-  if (os === 'linux') return '<span class="badge badge-linux">Linux</span>';
-  return '<span class="badge badge-win">Windows</span>';
+// ── HELPERS ─────────────────────────────────────────────────────
+function osBadge(os) {
+  const map = {mac:'<span class="badge badge-mac">🍎 MacBook</span>', linux:'<span class="badge badge-linux">🐧 Linux</span>', windows:'<span class="badge badge-win">🪟 Windows</span>'};
+  return map[os] || map.windows;
 }
-
-function getWarrantyBadge(w) {
-  if (w === 'In Warranty') return '<span class="badge badge-warranty">In Warranty</span>';
+function warrantyBadge(w) {
+  if (w === 'In Warranty') return '<span class="badge badge-warranty">✅ In Warranty</span>';
   if (w === 'Out of Warranty') return '<span class="badge badge-oow">Out of Warranty</span>';
-  return '<span class="badge" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border)">—</span>';
+  return '<span class="badge badge-oow">—</span>';
+}
+function statusBadge(cat) {
+  const map = {spare:'<span class="badge badge-spare">📦 Spare/IT</span>', faulty:'<span class="badge badge-faulty">⚠️ Faulty</span>', active:'<span class="badge badge-active">✔ In Use</span>'};
+  return map[cat] || map.active;
+}
+function toast(msg, dur=2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', dur);
 }
 
-function getStatusBadge(cat) {
-  if (cat === 'spare') return '<span class="badge badge-spare">Spare / IT</span>';
-  if (cat === 'faulty') return '<span class="badge badge-faulty">Faulty</span>';
-  return '<span class="badge badge-active">In Use</span>';
-}
-
+// ── STATS ───────────────────────────────────────────────────────
 function renderStats() {
-  const total = raw.length;
-  const macs = raw.filter(r => r.os === 'mac').length;
-  const windows = raw.filter(r => r.os === 'windows').length;
-  const linux = raw.filter(r => r.os === 'linux').length;
-  const spare = raw.filter(r => r.category === 'spare').length;
-  const faulty = raw.filter(r => r.category === 'faulty').length;
-  const inWarranty = raw.filter(r => r.warranty === 'In Warranty').length;
-  const active = raw.filter(r => r.category === 'active').length;
+  const total = assets.length;
+  const macs = assets.filter(r=>r.os==='mac').length;
+  const wins = assets.filter(r=>r.os==='windows').length;
+  const linux = assets.filter(r=>r.os==='linux').length;
+  const spare = assets.filter(r=>r.category==='spare').length;
+  const faulty = assets.filter(r=>r.category==='faulty').length;
+  const inw = assets.filter(r=>r.warranty==='In Warranty').length;
+  const active = assets.filter(r=>r.category==='active').length;
 
-  const cards = [
-    {label:'Total Assets', value:total, sub:'across all employees', color:'#4f8ef7'},
-    {label:'Active / In Use', value:active, sub:'assigned to employees', color:'#38d9a9'},
-    {label:'MacBooks', value:macs, sub:'Apple devices', color:'#a78bfa'},
-    {label:'Windows', value:windows, sub:'Windows laptops', color:'#60a5fa'},
-    {label:'Linux', value:linux, sub:'Linux machines', color:'#34d399'},
-    {label:'Spare with IT', value:spare, sub:'available for allocation', color:'#ffa94d'},
-    {label:'Faulty', value:faulty, sub:'needs repair/attention', color:'#ff6b6b'},
-    {label:'In Warranty', value:inWarranty, sub:'under active warranty', color:'#4f8ef7'},
-  ];
-
-  document.getElementById('statsGrid').innerHTML = cards.map(c => `
-    <div class="stat-card" style="--card-color:${c.color}">
-      <div class="stat-label">${c.label}</div>
-      <div class="stat-value">${c.value}</div>
-      <div class="stat-sub">${c.sub}</div>
-    </div>
-  `).join('');
+  document.getElementById('headerCount').textContent = `${total} total assets`;
+  document.getElementById('statsGrid').innerHTML = [
+    {label:'Total Assets',value:total,sub:'all records',color:'#2563eb'},
+    {label:'Active / In Use',value:active,sub:'assigned',color:'#16a34a'},
+    {label:'MacBooks',value:macs,sub:'Apple devices',color:'#7c3aed'},
+    {label:'Windows',value:wins,sub:'Windows laptops',color:'#0369a1'},
+    {label:'Linux',value:linux,sub:'Linux machines',color:'#059669'},
+    {label:'Spare with IT',value:spare,sub:'available',color:'#d97706'},
+    {label:'Faulty',value:faulty,sub:'needs repair',color:'#dc2626'},
+    {label:'In Warranty',value:inw,sub:'under warranty',color:'#2563eb'},
+  ].map(c=>`<div class="stat-card" style="--card-color:${c.color}">
+    <div class="stat-label">${c.label}</div>
+    <div class="stat-value">${c.value}</div>
+    <div class="stat-sub">${c.sub}</div>
+  </div>`).join('');
 }
 
+// ── FILTERS ─────────────────────────────────────────────────────
 function populateFilters() {
-  const brands = [...new Set(raw.map(r => r.brand).filter(b => b && b !== '—'))].sort();
+  const brands = [...new Set(assets.map(r=>r.brand).filter(b=>b&&b!=='—'))].sort();
   const sel = document.getElementById('brandFilter');
-  brands.forEach(b => {
-    const opt = document.createElement('option');
-    opt.value = b; opt.textContent = b;
-    sel.appendChild(opt);
-  });
+  sel.innerHTML = '<option value="">All Brands</option>' + brands.map(b=>`<option>${b}</option>`).join('');
 }
 
-function filterData() {
+function filterAndRender() {
   const q = document.getElementById('searchInput').value.toLowerCase();
   const brand = document.getElementById('brandFilter').value;
-  const status = document.getElementById('statusFilter').value;
+  const os = document.getElementById('osFilter').value;
+  const warranty = document.getElementById('warrantyFilter').value;
 
-  filtered = raw.filter(r => {
-    const matchQ = !q || r.n.toLowerCase().includes(q) || r.id.toLowerCase().includes(q) || r.serial.toLowerCase().includes(q) || r.brand.toLowerCase().includes(q);
-    const matchBrand = !brand || r.brand === brand;
-    let matchStatus = true;
-    if (status === 'active') matchStatus = r.category === 'active';
-    else if (status === 'spare') matchStatus = r.category === 'spare';
-    else if (status === 'faulty') matchStatus = r.category === 'faulty';
-    else if (status === 'mac') matchStatus = r.os === 'mac';
-    else if (status === 'windows') matchStatus = r.os === 'windows';
-    else if (status === 'linux') matchStatus = r.os === 'linux';
-    return matchQ && matchBrand && matchStatus;
+  filtered = assets.filter(r => {
+    const mq = !q || r.n.toLowerCase().includes(q) || r.id.toLowerCase().includes(q) || r.serial.toLowerCase().includes(q) || r.brand.toLowerCase().includes(q) || r.remark.toLowerCase().includes(q);
+    const mb = !brand || r.brand === brand;
+    const mo = !os || r.os === os;
+    const mw = !warranty || r.warranty === warranty;
+    // Tab filter
+    let mt = true;
+    if (currentTab==='spare') mt = r.category==='spare';
+    else if (currentTab==='faulty') mt = r.category==='faulty';
+    return mq && mb && mo && mw && mt;
   });
 
   currentPage = 1;
@@ -375,102 +550,171 @@ function filterData() {
   else renderTable();
 }
 
+// ── TABLE ────────────────────────────────────────────────────────
 function renderTable() {
-  const start = (currentPage - 1) * pageSize;
-  const page = filtered.slice(start, start + pageSize);
-  const totalPages = Math.ceil(filtered.length / pageSize);
+  const start = (currentPage-1)*pageSize;
+  const page = filtered.slice(start, start+pageSize);
+  const totalPages = Math.ceil(filtered.length/pageSize);
 
-  document.getElementById('resultCount').textContent = `${filtered.length} results`;
-  document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${Math.max(1, totalPages)}`;
-  document.getElementById('prevBtn').disabled = currentPage === 1;
-  document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+  document.getElementById('pageInfo').textContent = `Showing ${Math.min(start+1,filtered.length)}–${Math.min(start+pageSize,filtered.length)} of ${filtered.length} assets`;
+  document.getElementById('prevBtn').disabled = currentPage===1;
+  document.getElementById('nextBtn').disabled = currentPage>=totalPages;
 
-  document.getElementById('tableBody').innerHTML = page.map((r, i) => `
-    <tr>
-      <td class="mono" style="color:var(--muted)">${start + i + 1}</td>
-      <td><div style="font-weight:500;font-size:13px">${r.n}</div></td>
-      <td><span class="mono" style="color:var(--accent)">${r.id}</span></td>
+  document.getElementById('tableBody').innerHTML = page.length ? page.map((r,i)=>{
+    const realIdx = assets.indexOf(r);
+    return `<tr>
+      <td class="mono" style="color:var(--muted2)">${start+i+1}</td>
+      <td><div style="font-weight:500">${r.n}</div></td>
+      <td><span class="mono" style="color:var(--accent);font-weight:500">${r.id}</span></td>
       <td style="color:var(--muted);font-size:12px">${r.brand}</td>
-      <td>${getOsBadge(r.os)}</td>
+      <td>${osBadge(r.os)}</td>
       <td><span class="mono" style="color:var(--muted);font-size:10px">${r.serial}</span></td>
-      <td class="mono" style="font-size:11px">${r.ram}</td>
-      <td>${getWarrantyBadge(r.warranty)}</td>
-      <td>${getStatusBadge(r.category)}</td>
-      <td style="font-size:11px;color:var(--muted);max-width:150px">${r.remark}</td>
-    </tr>
-  `).join('') || `<tr><td colspan="10"><div class="empty"><div class="empty-icon">🔍</div><div>No assets found</div></div></td></tr>`;
+      <td class="mono">${r.ram}</td>
+      <td>${warrantyBadge(r.warranty)}</td>
+      <td>${statusBadge(r.category)}</td>
+      <td style="font-size:12px;color:var(--muted);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${r.remark}">${r.remark||'—'}</td>
+      <td>
+        <div class="action-btns">
+          <button class="icon-btn edit" onclick="openEditModal(${realIdx})" title="Edit">✏️</button>
+          <button class="icon-btn del" onclick="openDeleteModal(${realIdx})" title="Delete">🗑️</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="11"><div class="empty"><div class="empty-icon">🔍</div><div style="font-weight:500;color:var(--muted)">No assets found</div><div style="font-size:12px;margin-top:4px;color:var(--muted2)">Try adjusting your search or filters</div></div></td></tr>`;
 }
 
+// ── USER VIEW ────────────────────────────────────────────────────
 function renderUserView() {
-  // Group active users (not spare/faulty IT entries)
+  const q = document.getElementById('searchInput').value.toLowerCase();
   const userMap = {};
-  raw.forEach(r => {
-    const name = r.n;
-    const isItEntry = name.toLowerCase().startsWith('with it') || name.toLowerCase().startsWith('spare') || name.toLowerCase().startsWith('sapre');
-    if (!isItEntry) {
-      if (!userMap[name]) userMap[name] = [];
-      userMap[name].push(r);
+  assets.forEach(r => {
+    const isIt = r.n.toLowerCase().startsWith('with it') || r.n.toLowerCase().startsWith('spare') || r.n.toLowerCase().startsWith('sapre') || r.n.toLowerCase().startsWith('given to');
+    if (!isIt) {
+      if (!userMap[r.n]) userMap[r.n] = [];
+      userMap[r.n].push(r);
     }
   });
-
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  const entries = Object.entries(userMap).filter(([name]) => !q || name.toLowerCase().includes(q));
-
-  const icons = {mac:'💻', windows:'🖥️', linux:'🐧'};
-
-  document.getElementById('resultCount').textContent = `${entries.length} users`;
-  document.getElementById('userGrid').innerHTML = entries.map(([name, assets]) => `
+  const icons = {mac:'🍎', windows:'🖥️', linux:'🐧'};
+  const entries = Object.entries(userMap).filter(([name])=>!q||name.toLowerCase().includes(q));
+  document.getElementById('userGrid').innerHTML = entries.length ? entries.map(([name,list])=>`
     <div class="user-card">
       <div class="user-name">${name}</div>
-      <div class="user-count">${assets.length} asset${assets.length > 1 ? 's' : ''} assigned</div>
+      <div class="user-count">${list.length} asset${list.length>1?'s':''} assigned</div>
       <div class="user-assets">
-        ${assets.map(a => `
-          <div class="asset-row">
-            <div class="asset-icon">${icons[a.os] || '📦'}</div>
-            <div class="asset-info">
-              <div style="font-size:12px;font-weight:500">${a.brand !== '—' ? a.brand : 'Unknown Brand'}</div>
-              <div class="asset-id">${a.id} &nbsp;|&nbsp; ${a.serial}</div>
-            </div>
-            ${getOsBadge(a.os)}
+        ${list.map(a=>`<div class="asset-item">
+          <span style="font-size:18px">${icons[a.os]||'📦'}</span>
+          <div class="asset-item-info">
+            <div class="asset-item-name">${a.brand} ${a.remark?'· '+a.remark:''}</div>
+            <div class="asset-item-id">${a.id} · ${a.serial}</div>
           </div>
-        `).join('')}
+          ${osBadge(a.os)}
+        </div>`).join('')}
       </div>
-    </div>
-  `).join('') || `<div class="empty"><div class="empty-icon">👤</div><div>No users found</div></div>`;
+    </div>`).join('') : `<div class="empty"><div class="empty-icon">👤</div><div>No users found</div></div>`;
 }
 
-function switchTab(tab) {
-  currentTab = tab;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
+// ── ADD / EDIT ───────────────────────────────────────────────────
+function openAddModal() {
+  editIndex = null;
+  document.getElementById('modalTitle').textContent = '➕ Add New Asset';
+  ['f_name','f_id','f_serial','f_remark'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f_brand').value='';
+  document.getElementById('f_os').value='windows';
+  document.getElementById('f_ram').value='16GB';
+  document.getElementById('f_warranty').value='In Warranty';
+  document.getElementById('f_category').value='active';
+  document.getElementById('formOverlay').classList.add('open');
+}
 
-  const statusFilter = document.getElementById('statusFilter');
+function openEditModal(idx) {
+  editIndex = idx;
+  const r = assets[idx];
+  document.getElementById('modalTitle').textContent = '✏️ Edit Asset';
+  document.getElementById('f_name').value = r.n;
+  document.getElementById('f_id').value = r.id==='—'?'':r.id;
+  document.getElementById('f_brand').value = r.brand==='—'?'':r.brand;
+  document.getElementById('f_os').value = r.os;
+  document.getElementById('f_serial').value = r.serial==='—'?'':r.serial;
+  document.getElementById('f_ram').value = r.ram;
+  document.getElementById('f_warranty').value = r.warranty==='—'?'In Warranty':r.warranty;
+  document.getElementById('f_category').value = r.category;
+  document.getElementById('f_remark').value = r.remark;
+  document.getElementById('formOverlay').classList.add('open');
+}
 
-  if (tab === 'spare') { statusFilter.value = 'spare'; filterData(); }
-  else if (tab === 'faulty') { statusFilter.value = 'faulty'; filterData(); }
-  else { statusFilter.value = ''; filterData(); }
+function closeModal() { document.getElementById('formOverlay').classList.remove('open'); }
 
-  if (tab === 'user') {
-    document.getElementById('tableView').style.display = 'none';
-    document.getElementById('userView').style.display = 'block';
-    renderUserView();
+function saveAsset() {
+  const name = document.getElementById('f_name').value.trim();
+  const brand = document.getElementById('f_brand').value;
+  if (!name) { alert('Please enter employee name'); return; }
+  if (!brand) { alert('Please select a brand'); return; }
+
+  const record = {
+    n: name,
+    id: document.getElementById('f_id').value.trim() || '—',
+    brand: brand,
+    os: document.getElementById('f_os').value,
+    serial: document.getElementById('f_serial').value.trim() || '—',
+    ram: document.getElementById('f_ram').value,
+    warranty: document.getElementById('f_warranty').value,
+    category: document.getElementById('f_category').value,
+    remark: document.getElementById('f_remark').value.trim(),
+  };
+
+  if (editIndex !== null) {
+    assets[editIndex] = record;
+    toast('✅ Asset updated successfully!');
   } else {
-    document.getElementById('tableView').style.display = 'block';
-    document.getElementById('userView').style.display = 'none';
-    renderTable();
+    assets.unshift(record);
+    toast('✅ Asset added successfully!');
   }
+
+  saveData();
+  closeModal();
+  populateFilters();
+  renderStats();
+  filterAndRender();
+}
+
+// ── DELETE ───────────────────────────────────────────────────────
+function openDeleteModal(idx) {
+  deleteIndex = idx;
+  document.getElementById('deleteDesc').textContent = `Are you sure you want to delete asset assigned to "${assets[idx].n}"? This action cannot be undone.`;
+  document.getElementById('deleteOverlay').classList.add('open');
+}
+function closeDeleteModal() { document.getElementById('deleteOverlay').classList.remove('open'); }
+function confirmDelete() {
+  assets.splice(deleteIndex, 1);
+  saveData();
+  closeDeleteModal();
+  populateFilters();
+  renderStats();
+  filterAndRender();
+  toast('🗑️ Asset deleted successfully!');
+}
+
+// ── TABS ─────────────────────────────────────────────────────────
+function switchTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const isUser = tab==='user';
+  document.getElementById('tableView').style.display = isUser ? 'none' : 'block';
+  document.getElementById('userView').style.display = isUser ? 'block' : 'none';
+  filterAndRender();
 }
 
 function changePage(dir) {
   currentPage += dir;
   renderTable();
-  window.scrollTo({top: 0, behavior: 'smooth'});
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// INIT
+// ── INIT ─────────────────────────────────────────────────────────
 renderStats();
 populateFilters();
-filterData();
+filterAndRender();
 </script>
 </body>
 </html>
